@@ -1,0 +1,15 @@
+
+- Build with VS both projects (liboncrcp oncrcp) for the Configurations Release_AFR4 Debug_AFR4 Release Debug 
+for the platforms w32 & x64
+
+    - liboncrpc builds the static libraries (liboncrpc.lib)
+    - oncrpc builds the dynamic libraries (oncrcp.lib & oncrpc.dll)
+    - The Debug & Release platforms are for CommonCore
+    - The Debug & Release platforms append AFMd to the name of the dynamic libraries.
+
+- Deployment
+    - copy include and lib directories to another ONCRPC folder
+    - Remove .svn directoreis from it
+
+- No additional post-tasks needed.
+

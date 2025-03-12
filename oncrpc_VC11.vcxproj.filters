@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{19cf10b0-1dba-4529-89dc-4bb9cf6463e8}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6925840a-bc8d-4dba-83a6-27457d9a4a85}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{725aa0d9-a43c-4e2d-a804-79c0cf73afda}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\auth_non.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\auth_uni.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\authunix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bcopy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bindresv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_gen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_per.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_raw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_sim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_tcp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clnt_udp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\get_myad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getrpcen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getrpcpo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oncrpc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_cln.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_get.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_gma.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_pr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_pro.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pmap_rmt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\portmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rpc_call.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rpc_comm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rpc_prot.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_auth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_autu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_raw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_run.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_simp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_tcp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svc_udp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_arra.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_floa.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_mem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_rec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_refe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr_stdi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\oncrpc.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\rpc\AFM_PLATFORM.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\AUTH.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\AUTH_UNI.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\BCOPY.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\CLNT.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\NETDB.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\PMAP_CLN.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\PMAP_PRO.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\PMAP_RMT.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\RPC.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\RPC_MSG.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\SVC.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\SVC_AUTH.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\TYPES.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rpc\XDR.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="oncrpc"
+	ProjectGUID="{CC649889-3701-48C3-AD02-8687EF9B7277}"
+	Keyword="MFCDLLProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="lib"
+			IntermediateDirectory="Debug"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".\include"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;ONCRPC_EXPORTS;_X86_"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib"
+				OutputFile=".\lib/oncrpc.dll"
+				LinkIncremental="1"
+				ModuleDefinitionFile=".\src\oncrpc.def"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/oncrpc.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="FALSE"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="copy oncrpc.dll"
+				CommandLine="echo copy &quot;$(TargetPath)&quot;  &quot;..\UGNX3Install\startup&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\UGNX3Install\startup&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\Library\bin&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\Library\bin&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+echo copy &quot;$(TargetDir)$(TargetName).lib&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+copy &quot;$(TargetDir)\$(TargetName).lib&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+echo copy &quot;$(TargetDir)$(TargetName).lib&quot; &quot;..\Library\lib&quot;
+copy &quot;$(TargetDir)\$(TargetName).lib&quot; &quot;..\Library\lib&quot;
+echo copy &quot;.\include\rpc\*.h&quot; &quot;..\Library\include\rpc&quot;
+copy &quot;.\include\rpc\*.h&quot; &quot;..\Library\include\rpc&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\Test\bin&quot;
+mkdir &quot;..\Test\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\Test\bin\$(PlatformName)\$(ConfigurationName)\&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_client\bin&quot;
+mkdir &quot;..\oncrpc_test_client\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_client\bin\$(PlatformName)\$(ConfigurationName)&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_server\bin&quot;
+mkdir &quot;..\oncrpc_test_server\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_server\bin\$(PlatformName)\$(ConfigurationName)&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories=".\include"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;ONCRPC_EXPORTS;_X86_"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib"
+				OutputFile="$(OutDir)/oncrpc.dll"
+				LinkIncremental="1"
+				ModuleDefinitionFile=".\src\oncrpc.def"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(OutDir)/oncrpc.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="FALSE"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="copy $(TargetFileName)"
+				CommandLine="echo copy &quot;$(TargetPath)&quot;  &quot;..\UGNX3Install\startup&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\UGNX3Install\startup&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\Library\bin&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\Library\bin&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+echo copy &quot;$(TargetDir)$(TargetName).lib&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+copy &quot;$(TargetDir)\$(TargetName).lib&quot; &quot;..\CATInstall\ACS_Libs\intel_a\code\bin&quot;
+echo copy &quot;$(TargetDir)$(TargetName).lib&quot; &quot;..\Library\lib&quot;
+copy &quot;$(TargetDir)\$(TargetName).lib&quot; &quot;..\Library\lib&quot;
+echo copy &quot;.\include\rpc\*.h&quot; &quot;..\Library\include\rpc&quot;
+copy &quot;.\include\rpc\*.h&quot; &quot;..\Library\include\rpc&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\Test\bin&quot;
+mkdir &quot;..\Test\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\Test\bin\$(PlatformName)\$(ConfigurationName)\&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_client\bin&quot;
+mkdir &quot;..\oncrpc_test_client\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_client\bin\$(PlatformName)\$(ConfigurationName)&quot;
+echo copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_server\bin&quot;
+mkdir &quot;..\oncrpc_test_server\bin\$(PlatformName)\$(ConfigurationName)&quot;
+copy &quot;$(TargetPath)&quot; &quot;..\oncrpc_test_server\bin\$(PlatformName)\$(ConfigurationName)&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="src\auth_non.c">
+			</File>
+			<File
+				RelativePath="src\auth_uni.c">
+			</File>
+			<File
+				RelativePath="src\authunix.c">
+			</File>
+			<File
+				RelativePath="src\bcopy.c">
+			</File>
+			<File
+				RelativePath="src\bindresv.c">
+			</File>
+			<File
+				RelativePath="src\clnt_gen.c">
+			</File>
+			<File
+				RelativePath="src\clnt_per.c">
+			</File>
+			<File
+				RelativePath="src\clnt_raw.c">
+			</File>
+			<File
+				RelativePath="src\clnt_sim.c">
+			</File>
+			<File
+				RelativePath="src\clnt_tcp.c">
+			</File>
+			<File
+				RelativePath="src\clnt_udp.c">
+			</File>
+			<File
+				RelativePath="src\get_myad.c">
+			</File>
+			<File
+				RelativePath="src\getrpcen.c">
+			</File>
+			<File
+				RelativePath="src\getrpcpo.c">
+			</File>
+			<File
+				RelativePath="src\nt.c">
+			</File>
+			<File
+				RelativePath="oncrpc.cpp">
+			</File>
+			<File
+				RelativePath="src\oncrpc.def">
+			</File>
+			<File
+				RelativePath="src\pmap_cln.c">
+			</File>
+			<File
+				RelativePath="src\pmap_get.c">
+			</File>
+			<File
+				RelativePath="src\pmap_gma.c">
+			</File>
+			<File
+				RelativePath="src\pmap_pr.c">
+			</File>
+			<File
+				RelativePath="src\pmap_pro.c">
+			</File>
+			<File
+				RelativePath="src\pmap_rmt.c">
+			</File>
+			<File
+				RelativePath="src\portmap.c">
+			</File>
+			<File
+				RelativePath="src\rpc_call.c">
+			</File>
+			<File
+				RelativePath="src\rpc_comm.c">
+			</File>
+			<File
+				RelativePath="src\rpc_prot.c">
+			</File>
+			<File
+				RelativePath="src\svc.c">
+			</File>
+			<File
+				RelativePath="src\svc_auth.c">
+			</File>
+			<File
+				RelativePath="src\svc_autu.c">
+			</File>
+			<File
+				RelativePath="src\svc_raw.c">
+			</File>
+			<File
+				RelativePath="src\svc_run.c">
+			</File>
+			<File
+				RelativePath="src\svc_simp.c">
+			</File>
+			<File
+				RelativePath="src\svc_tcp.c">
+			</File>
+			<File
+				RelativePath="src\svc_udp.c">
+			</File>
+			<File
+				RelativePath="src\xdr.c">
+			</File>
+			<File
+				RelativePath="src\xdr_arra.c">
+			</File>
+			<File
+				RelativePath="src\xdr_floa.c">
+			</File>
+			<File
+				RelativePath="src\xdr_mem.c">
+			</File>
+			<File
+				RelativePath="src\xdr_rec.c">
+			</File>
+			<File
+				RelativePath="src\xdr_refe.c">
+			</File>
+			<File
+				RelativePath="src\xdr_stdi.c">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
