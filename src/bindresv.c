@@ -43,7 +43,7 @@ static  char sccsid[] = "@(#)bindresvport.c	2.2 88/07/29 4.0 RPCSRC 1.8 88/02/08
  * Copyright (c) 1987 by Sun Microsystems, Inc.
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)
 #include <rpc/rpc.h>

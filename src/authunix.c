@@ -49,7 +49,7 @@ static char sccsid[] = "@(#)authunix_prot.c 1.15 87/08/11 Copyr 1984 Sun Micro";
  * Copyright (C) 1984, Sun Microsystems, Inc.
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)
 #include <rpc/types.h>

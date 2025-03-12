@@ -55,7 +55,7 @@ static char sccsid[] = "@(#)rpc_prot.c 1.36 87/08/11 Copyr 1984 Sun Micro";
  * routines are also in this program.
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if !defined(WIN32) && !defined(_WIN64)
 #include <sys/param.h>

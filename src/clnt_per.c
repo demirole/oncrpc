@@ -49,7 +49,7 @@ static char sccsid[] = "@(#)clnt_perror.c 1.15 87/10/07 Copyr 1984 Sun Micro";
  *
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #include <stdio.h>
 #if defined(WIN32) || defined(_WIN64)

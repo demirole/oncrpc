@@ -61,7 +61,7 @@ static char sccsid[] = "@(#)xdr_rec.c 1.21 87/08/11 Copyr 1984 Sun Micro";
 
 #include <stdio.h>
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)
 #include <io.h>

@@ -45,7 +45,7 @@ static char sccsid[] = "@(#)clnt_generic.c 1.4 87/08/11 (C) 1987 SMI";
  * Copyright (C) 1987, Sun Microsystems, Inc.
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)
 #include <rpc/rpc.h>

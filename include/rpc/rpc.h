@@ -48,7 +48,7 @@
 #ifndef __RPC_HEADER__
 #define __RPC_HEADER__
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)	
 

@@ -47,7 +47,7 @@
 #define __TYPES_RPC_HEADER__
 
 //! some newer platform definitions
-#include "AFM_PLATFORM.H"
+#include "afm_platform.h"
 
 #define	bool_t	int
 #define	enum_t	int

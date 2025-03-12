@@ -48,7 +48,7 @@ static char sccsid[] = "@(#)get_myaddress.c 1.4 87/08/11 Copyr 1984 Sun Micro";
  * Copyright (C) 1984, Sun Microsystems, Inc.
  */
 
-#include "rpc/AFM_PLATFORM.H" // platform flag adjustments
+#include "rpc/afm_platform.h" // platform flag adjustments
 
 #if defined(WIN32) || defined(_WIN64)
 #include <rpc/rpc.h>
