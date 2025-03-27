@@ -62,9 +62,9 @@ static char sccsid[] = "@(#)auth_none.c 1.19 87/08/11 Copyr 1984 Sun Micro";
  */
 static void	authnone_verf();
 static void	authnone_destroy();
-static bool_t	authnone_marshal();
-static bool_t	authnone_validate();
-static bool_t	authnone_refresh();
+static bool_t authnone_marshal(AUTH *client, XDR *xdrs);
+static bool_t authnone_validate();
+static bool_t authnone_refresh();
 
 static struct auth_ops ops = {
 	authnone_verf,
@@ -83,9 +83,9 @@ static struct authnone_private {
 AUTH *
 authnone_create()
 {
-	register struct authnone_private *ap = authnone_private;
+	struct authnone_private *ap = authnone_private;
 	XDR xdr_stream;
-	register XDR *xdrs;
+	XDR *xdrs;
 
 	if (ap == 0) {
 		ap = (struct authnone_private *)calloc(1, sizeof (*ap));
@@ -109,11 +109,9 @@ authnone_create()
 
 /*ARGSUSED*/
 static bool_t
-authnone_marshal(client, xdrs)
-	AUTH *client;
-	XDR *xdrs;
+authnone_marshal(AUTH *client, XDR *xdrs)
 {
-	register struct authnone_private *ap = authnone_private;
+	struct authnone_private *ap = authnone_private;
 
 	if (ap == 0)
 		return (0);
@@ -129,14 +127,12 @@ authnone_verf()
 static bool_t
 authnone_validate()
 {
-
 	return (TRUE);
 }
 
 static bool_t
 authnone_refresh()
 {
-
 	return (FALSE);
 }
 

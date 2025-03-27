@@ -63,13 +63,12 @@ static struct proglst {
 	xdrproc_t p_inproc, p_outproc;
 	struct proglst *p_nxt;
 } *proglst;
-static void universal();
+static void universal(struct svc_req *, SVCXPRT *);
 static SVCXPRT *transp;
 struct proglst *pl;
 
-registerrpc(prognum, versnum, procnum, progname, inproc, outproc)
-	char *(*progname)();
-	xdrproc_t inproc, outproc;
+int
+registerrpc(int prognum, int versnum, int procnum, char *(*progname)(), xdrproc_t inproc, xdrproc_t outproc)
 {
 
 	if (procnum == NULLPROC) {
@@ -124,9 +123,7 @@ registerrpc(prognum, versnum, procnum, progname, inproc, outproc)
 }
 
 static void
-universal(rqstp, transp)
-	struct svc_req *rqstp;
-	SVCXPRT *transp;
+universal(struct svc_req *rqstp, SVCXPRT *transp)
 {
 	int prog, proc;
 	char *outdata;

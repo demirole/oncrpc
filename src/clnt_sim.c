@@ -51,6 +51,9 @@ static char sccsid[] = "@(#)clnt_simple.c 1.35 87/08/11 Copyr 1984 Sun Micro";
 
 #include <stdio.h>
 #include <rpc/rpc.h>
+
+#include "rpc/bcopy.h"
+#include "rpc/svc.h"
 #if !defined(WIN32) && !defined(_WIN64)
 #include <sys/socket.h>
 #include <netdb.h>
@@ -64,12 +67,10 @@ static struct callrpc_private {
 	char	*oldhost;
 } *callrpc_private;
 
-callrpc(host, prognum, versnum, procnum, inproc, in, outproc, out)
-	char *host;
-	xdrproc_t inproc, outproc;
-	char *in, *out;
+int
+callrpc(char *host, int prognum, int versnum, u_long procnum, xdrproc_t inproc, char *in, xdrproc_t outproc, char *out)
 {
-	register struct callrpc_private *crp = callrpc_private;
+	struct callrpc_private *crp = callrpc_private;
 	struct sockaddr_in server_addr;
 	enum clnt_stat clnt_stat;
 	struct hostent *hp;

@@ -24,9 +24,7 @@
  *      Copies len bytes from s1 to s2
  */
 void
-bcopy(s1, s2, len)
-	char *s1, *s2;
-	int len;
+bcopy(char *s1, char *s2, int len)
 {
 	for(; len > 0; len--)
 		*s2++ = *s1++;
@@ -37,9 +35,7 @@ bcopy(s1, s2, len)
  *      Places len zero byes in s
  */
 void
-bzero(s, len)
-	char *s;
-	int len;
+bzero(char *s, int len)
 {
 	for(; len > 0; len--)
 		*s++ = (char) 0;
@@ -52,9 +48,7 @@ bzero(s, len)
  *  length zero bytes always returns zero.                       
 */
 int
-bcmp(s1, s2, len)
-	char *s1, *s2;
-	int len;
+bcmp(char *s1, char *s2, int len)
 {
 	for(; len > 0; len--, s1++, s2++)
 		if (*s1 != *s2)

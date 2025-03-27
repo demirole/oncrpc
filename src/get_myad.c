@@ -71,8 +71,8 @@ static char sccsid[] = "@(#)get_myaddress.c 1.4 87/08/11 Copyr 1984 Sun Micro";
  */
 #endif
 
-get_myaddress(addr)
-	struct sockaddr_in *addr;
+void
+get_myaddress(struct sockaddr_in *addr)
 {
 #if defined(WIN32) || defined(_WIN64)
 struct hostent	*Hostent;

@@ -48,7 +48,8 @@ static  char sccsid[] = "@(#)getrpcent.c 1.9 87/08/11  Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
-#include <sys/types.h>
+#include <stddef.h>
+#include <rpc/netdb.h>
 #include <rpc/rpc.h>
 #if !defined(WIN32) && !defined(_WIN64)
 #include <netdb.h>
@@ -70,7 +71,7 @@ struct rpcdata {
 	char	*domain;
 } *rpcdata, *_rpcdata();
 
-static	struct rpcent *interpret();
+static	struct rpcent *interpret(char *val, size_t len);
 struct	hostent *gethostent();
 
 #if defined(WIN32) || defined(_WIN64)
@@ -89,7 +90,7 @@ static char RPCDB[] = "/etc/rpc";
 static struct rpcdata *
 _rpcdata()
 {
-	register struct rpcdata *d = rpcdata;
+	struct rpcdata *d = rpcdata;
 
 #if defined(WIN32) || defined(_WIN64)
 	char *str;
@@ -107,51 +108,10 @@ _rpcdata()
 	return (d);
 }
 
-struct rpcent *
-getrpcbynumber(number)
-	register int number;
+void
+setrpcent(int f)
 {
-	register struct rpcdata *d = _rpcdata();
-	register struct rpcent *p;
-	int reason;
-	char adrstr[16], *val = NULL;
-	int vallen;
-
-	if (d == 0)
-		return (0);
-	setrpcent(0);
-	while (p = getrpcent()) {
-		if (p->r_number == number)
-			break;
-	}
-	endrpcent();
-	return (p);
-}
-
-struct rpcent *
-getrpcbyname(name)
-	char *name;
-{
-	struct rpcent *rpc;
-	char **rp;
-
-	setrpcent(0);
-	while(rpc = getrpcent()) {
-		if (strcmp(rpc->r_name, name) == 0)
-			return (rpc);
-		for (rp = rpc->r_aliases; *rp != NULL; rp++) {
-			if (strcmp(*rp, name) == 0)
-				return (rpc);
-		}
-	}
-	endrpcent();
-	return (NULL);
-}
-
-setrpcent(f)
-	int f;
-{
-	register struct rpcdata *d = _rpcdata();
+	struct rpcdata *d = _rpcdata();
 
 	if (d == 0)
 		return;
@@ -165,9 +125,10 @@ setrpcent(f)
 	d->stayopen |= f;
 }
 
+void
 endrpcent()
 {
-	register struct rpcdata *d = _rpcdata();
+	struct rpcdata *d = _rpcdata();
 
 	if (d == 0)
 		return;
@@ -188,7 +149,7 @@ getrpcent()
 	int reason;
 	char *key = NULL, *val = NULL;
 	int keylen, vallen;
-	register struct rpcdata *d = _rpcdata();
+	struct rpcdata *d = _rpcdata();
 
 	if (d == 0)
 		return(NULL);
@@ -199,16 +160,35 @@ getrpcent()
 	return interpret(d->line, strlen(d->line));
 }
 
-static struct rpcent *
-interpret(val, len)
-	char *val;
+struct rpcent *
+getrpcbynumber(int number)
 {
-	register struct rpcdata *d = _rpcdata();
-	char *p;
-	register char *cp, **q;
+	struct rpcdata *d = _rpcdata();
+	struct rpcent *p;
+	int reason;
+	char adrstr[16], *val = NULL;
+	int vallen;
 
 	if (d == 0)
-		return;
+		return (0);
+	setrpcent(0);
+	while (p = getrpcent()) {
+		if (p->r_number == number)
+			break;
+	}
+	endrpcent();
+	return (p);
+}
+
+static struct rpcent *
+interpret(char *val, size_t len)
+{
+	struct rpcdata *d = _rpcdata();
+	char *p;
+	char *cp, **q;
+
+	if (d == 0)
+		return NULL;
 	strncpy(d->line, val, len);
 	p = d->line;
 	d->line[len] = '\n';
@@ -265,3 +245,23 @@ interpret(val, len)
 	*q = NULL;
 	return (&d->rpc);
 }
+
+struct rpcent *
+getrpcbyname(char *name)
+{
+	struct rpcent *rpc;
+	char **rp;
+
+	setrpcent(0);
+	while(rpc = getrpcent()) {
+		if (strcmp(rpc->r_name, name) == 0)
+			return (rpc);
+		for (rp = rpc->r_aliases; *rp != NULL; rp++) {
+			if (strcmp(*rp, name) == 0)
+				return (rpc);
+		}
+	}
+	endrpcent();
+	return (NULL);
+}
+

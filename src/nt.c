@@ -37,7 +37,7 @@ int rpc_nt_exit(void)
    return WSACleanup();
 }
 
-VOID
+void
 nt_rpc_report(LPTSTR lpszMsg)
 {
     //CHAR    chMsg[256];

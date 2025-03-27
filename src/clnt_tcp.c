@@ -79,8 +79,8 @@ static char sccsid[] = "@(#)clnt_tcp.c 1.37 87/10/05 Copyr 1984 Sun Micro";
 extern int errno;
 #endif
 
-static int	readtcp();
-static int	writetcp();
+static int	readtcp(struct ct_data *, caddr_t, int);
+static int	writetcp(struct ct_data *, caddr_t, int);
 
 static enum clnt_stat	clnttcp_call();
 static void		clnttcp_abort();
@@ -125,13 +125,7 @@ struct ct_data {
  * something more useful.
  */
 CLIENT *
-clnttcp_create(raddr, prog, vers, sockp, sendsz, recvsz)
-	struct sockaddr_in *raddr;
-	u_long prog;
-	u_long vers;
-	register int *sockp;
-	u_int sendsz;
-	u_int recvsz;
+clnttcp_create(struct sockaddr_in *raddr, u_long prog, u_long vers, int *sockp, u_int sendsz, u_int recvsz)
 {
 	CLIENT *h;
 	register struct ct_data *ct;
@@ -449,10 +443,7 @@ clnttcp_destroy(h)
  * around for the rpc level.
  */
 static int
-readtcp(ct, buf, len)
-	register struct ct_data *ct;
-	caddr_t buf;
-	register int len;
+readtcp(struct ct_data *ct, caddr_t buf, int len)
 {
 #ifdef FD_SETSIZE
 	fd_set mask;
@@ -463,7 +454,7 @@ readtcp(ct, buf, len)
 	FD_ZERO(&mask);
 	FD_SET(ct->ct_sock, &mask);
 #else
-	register int mask = 1 << (ct->ct_sock);
+	int mask = 1 << (ct->ct_sock);
 	int readfds;
 
 	if (len == 0)
@@ -538,12 +529,9 @@ readtcp(ct, buf, len)
 }
 
 static int
-writetcp(ct, buf, len)
-	struct ct_data *ct;
-	caddr_t buf;
-	int len;
+writetcp(struct ct_data *ct, caddr_t buf, int len)
 {
-	register int i, cnt;
+	int i, cnt;
 
 	for (cnt = len; cnt > 0; cnt -= i, buf += i) {
 #if defined(WIN32) || defined(_WIN64)

@@ -69,12 +69,12 @@ extern errno;
 /*
  * Ops vector for TCP/IP based rpc service handle
  */
-static bool_t		svctcp_recv();
-static enum xprt_stat	svctcp_stat();
-static bool_t		svctcp_getargs();
-static bool_t		svctcp_reply();
-static bool_t		svctcp_freeargs();
-static void		svctcp_destroy();
+static bool_t		svctcp_recv(SVCXPRT *xprt, struct rpc_msg *msg);
+static enum xprt_stat	svctcp_stat(SVCXPRT *xprt);
+static bool_t		svctcp_getargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr);
+static bool_t		svctcp_reply(SVCXPRT *xprt, struct rpc_msg *msg);
+static bool_t		svctcp_freeargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr);
+static void		svctcp_destroy(SVCXPRT *xprt);
 
 static struct xp_ops svctcp_op = {
 	svctcp_recv,
@@ -88,7 +88,7 @@ static struct xp_ops svctcp_op = {
 /*
  * Ops vector for TCP/IP rendezvous handler
  */
-static bool_t		rendezvous_request();
+static bool_t		rendezvous_request(SVCXPRT *xprt);
 static enum xprt_stat	rendezvous_stat();
 
 static struct xp_ops svctcp_rendezvous_op = {
@@ -106,8 +106,8 @@ static struct xp_ops svctcp_rendezvous_op = {
 	svctcp_destroy
 };
 
-static int readtcp(), writetcp();
-static SVCXPRT *makefd_xprt();
+static int readtcp(SVCXPRT *, caddr_t, int), writetcp(SVCXPRT *, caddr_t, int );
+static SVCXPRT *makefd_xprt(int fd, u_int sendsize, u_int recvsize);
 
 struct tcp_rendezvous { /* kept in xprt->xp_p1 */
 	u_int sendsize;
@@ -142,10 +142,7 @@ struct tcp_conn {  /* kept in xprt->xp_p1 */
  * 0 => use the system default.
  */
 SVCXPRT *
-svctcp_create(sock, sendsize, recvsize)
-	register int sock;
-	u_int sendsize;
-	u_int recvsize;
+svctcp_create(int sock, u_int sendsize, u_int recvsize)
 {
 	bool_t madesock = FALSE;
 	register SVCXPRT *xprt;
@@ -226,13 +223,10 @@ svcfd_create(fd, sendsize, recvsize)
 }
 
 static SVCXPRT *
-makefd_xprt(fd, sendsize, recvsize)
-	int fd;
-	u_int sendsize;
-	u_int recvsize;
+makefd_xprt(int fd, u_int sendsize, u_int recvsize)
 {
-	register SVCXPRT *xprt;
-	register struct tcp_conn *cd;
+	SVCXPRT *xprt;
+	struct tcp_conn *cd;
 
 	xprt = (SVCXPRT *)mem_alloc(sizeof(SVCXPRT));
 	if (xprt == (SVCXPRT *)NULL) {
@@ -270,8 +264,7 @@ makefd_xprt(fd, sendsize, recvsize)
 }
 
 static bool_t
-rendezvous_request(xprt)
-	register SVCXPRT *xprt;
+rendezvous_request(SVCXPRT *xprt)
 {
 	int sock;
 	struct tcp_rendezvous *r;
@@ -303,15 +296,13 @@ rendezvous_request(xprt)
 static enum xprt_stat
 rendezvous_stat()
 {
-
 	return (XPRT_IDLE);
 }
 
 static void
-svctcp_destroy(xprt)
-	register SVCXPRT *xprt;
+svctcp_destroy(SVCXPRT *xprt)
 {
-	register struct tcp_conn *cd = (struct tcp_conn *)xprt->xp_p1;
+	struct tcp_conn *cd = (struct tcp_conn *)xprt->xp_p1;
 
 	xprt_unregister(xprt);
 #if defined(WIN32) || defined(_WIN64)
@@ -342,12 +333,9 @@ static struct timeval wait_per_try = { 35, 0 };
  * (And a read of zero bytes is a half closed stream => error.)
  */
 static int
-readtcp(xprt, buf, len)
-	register SVCXPRT *xprt;
-	caddr_t buf;
-	register int len;
+readtcp(SVCXPRT *xprt, caddr_t buf, int len)
 {
-	register int sock = xprt->xp_sock;
+	int sock = xprt->xp_sock;
 #ifdef FD_SETSIZE
 	fd_set mask;
 	fd_set readfds;
@@ -397,12 +385,9 @@ fatal_err:
  * Any error is fatal and the connection is closed.
  */
 static int
-writetcp(xprt, buf, len)
-	register SVCXPRT *xprt;
-	caddr_t buf;
-	int len;
+writetcp(SVCXPRT *xprt, caddr_t buf, int len)
 {
-	register int i, cnt;
+	int i, cnt;
 
 	for (cnt = len; cnt > 0; cnt -= i, buf += i) {
 #if defined(WIN32) || defined(_WIN64)
@@ -419,8 +404,7 @@ writetcp(xprt, buf, len)
 }
 
 static enum xprt_stat
-svctcp_stat(xprt)
-	SVCXPRT *xprt;
+svctcp_stat(SVCXPRT *xprt)
 {
 	register struct tcp_conn *cd =
 	    (struct tcp_conn *)(xprt->xp_p1);
@@ -433,13 +417,11 @@ svctcp_stat(xprt)
 }
 
 static bool_t
-svctcp_recv(xprt, msg)
-	SVCXPRT *xprt;
-	register struct rpc_msg *msg;
+svctcp_recv(SVCXPRT *xprt, struct rpc_msg *msg)
 {
-	register struct tcp_conn *cd =
+	struct tcp_conn *cd =
 	    (struct tcp_conn *)(xprt->xp_p1);
-	register XDR *xdrs = &(cd->xdrs);
+	XDR *xdrs = &(cd->xdrs);
 
 	xdrs->x_op = XDR_DECODE;
 	(void)xdrrec_skiprecord(xdrs);
@@ -451,22 +433,15 @@ svctcp_recv(xprt, msg)
 }
 
 static bool_t
-svctcp_getargs(xprt, xdr_args, args_ptr)
-	SVCXPRT *xprt;
-	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+svctcp_getargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr)
 {
-
 	return ((*xdr_args)(&(((struct tcp_conn *)(xprt->xp_p1))->xdrs), args_ptr));
 }
 
 static bool_t
-svctcp_freeargs(xprt, xdr_args, args_ptr)
-	SVCXPRT *xprt;
-	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+svctcp_freeargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr)
 {
-	register XDR *xdrs =
+	XDR *xdrs =
 	    &(((struct tcp_conn *)(xprt->xp_p1))->xdrs);
 
 	xdrs->x_op = XDR_FREE;
@@ -474,14 +449,12 @@ svctcp_freeargs(xprt, xdr_args, args_ptr)
 }
 
 static bool_t
-svctcp_reply(xprt, msg)
-	SVCXPRT *xprt;
-	register struct rpc_msg *msg;
+svctcp_reply(SVCXPRT *xprt, struct rpc_msg *msg)
 {
-	register struct tcp_conn *cd =
+	struct tcp_conn *cd =
 	    (struct tcp_conn *)(xprt->xp_p1);
-	register XDR *xdrs = &(cd->xdrs);
-	register bool_t stat;
+	XDR *xdrs = &(cd->xdrs);
+	bool_t stat;
 
 	xdrs->x_op = XDR_ENCODE;
 	msg->rm_xid = cd->x_id;

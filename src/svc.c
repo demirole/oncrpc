@@ -93,7 +93,7 @@ static struct svc_callout {
 	void		    (*sc_dispatch)();
 } *svc_head;
 
-static struct svc_callout *svc_find();
+static struct svc_callout *svc_find(u_long prog, u_long vers, struct svc_callout **prev);
 
 /* ***************  SVCXPRT related stuff **************** */
 
@@ -101,10 +101,9 @@ static struct svc_callout *svc_find();
  * Activate a transport handle.
  */
 void
-xprt_register(xprt)
-	SVCXPRT *xprt;
+xprt_register(SVCXPRT *xprt)
 {
-	register int sock = xprt->xp_sock;
+	int sock = xprt->xp_sock;
 
 #ifdef FD_SETSIZE
 	if (xports == NULL) {
@@ -151,10 +150,9 @@ xprt_register(xprt)
  * De-activate a transport handle. 
  */
 void
-xprt_unregister(xprt) 
-	SVCXPRT *xprt;
+xprt_unregister(SVCXPRT *xprt)
 { 
-	register int sock = xprt->xp_sock;
+	int sock = xprt->xp_sock;
 
 #ifdef FD_SETSIZE
 #if defined(WIN32) || defined(_WIN64)
@@ -184,15 +182,10 @@ xprt_unregister(xprt)
  * program number comes in.
  */
 bool_t
-svc_register(xprt, prog, vers, dispatch, protocol)
-	SVCXPRT *xprt;
-	u_long prog;
-	u_long vers;
-	void (*dispatch)();
-	int protocol;
+svc_register(SVCXPRT *xprt, u_long prog, u_long vers, void (*dispatch)(), int protocol)
 {
 	struct svc_callout *prev;
-	register struct svc_callout *s;
+	struct svc_callout *s;
 
 	if ((s = svc_find(prog, vers, &prev)) != NULL_SVC) {
 		if (s->sc_dispatch == dispatch)
@@ -220,12 +213,10 @@ pmap_it:
  * Remove a service program from the callout list.
  */
 void
-svc_unregister(prog, vers)
-	u_long prog;
-	u_long vers;
+svc_unregister(u_long prog, u_long vers)
 {
 	struct svc_callout *prev;
-	register struct svc_callout *s;
+	struct svc_callout *s;
 
 	if ((s = svc_find(prog, vers, &prev)) == NULL_SVC)
 		return;
@@ -245,12 +236,9 @@ svc_unregister(prog, vers)
  * struct.
  */
 static struct svc_callout *
-svc_find(prog, vers, prev)
-	u_long prog;
-	u_long vers;
-	struct svc_callout **prev;
+svc_find(u_long prog, u_long vers, struct svc_callout **prev)
 {
-	register struct svc_callout *s, *p;
+	struct svc_callout *s, *p;
 
 	p = NULL_SVC;
 	for (s = svc_head; s != NULL_SVC; s = s->sc_next) {
@@ -269,10 +257,7 @@ done:
  * Send a reply to an rpc request
  */
 bool_t
-svc_sendreply(xprt, xdr_results, xdr_location)
-	register SVCXPRT *xprt;
-	xdrproc_t xdr_results;
-	caddr_t xdr_location;
+svc_sendreply(SVCXPRT *xprt, xdrproc_t xdr_results, caddr_t xdr_location)
 {
 	struct rpc_msg rply; 
 
@@ -289,8 +274,7 @@ svc_sendreply(xprt, xdr_results, xdr_location)
  * No procedure error reply
  */
 void
-svcerr_noproc(xprt)
-	register SVCXPRT *xprt;
+svcerr_noproc(SVCXPRT *xprt)
 {
 	struct rpc_msg rply;
 
@@ -305,8 +289,7 @@ svcerr_noproc(xprt)
  * Can't decode args error reply
  */
 void
-svcerr_decode(xprt)
-	register SVCXPRT *xprt;
+svcerr_decode(SVCXPRT *xprt)
 {
 	struct rpc_msg rply; 
 
@@ -321,8 +304,7 @@ svcerr_decode(xprt)
  * Some system error
  */
 void
-svcerr_systemerr(xprt)
-	register SVCXPRT *xprt;
+svcerr_systemerr(SVCXPRT *xprt)
 {
 	struct rpc_msg rply; 
 
@@ -337,9 +319,7 @@ svcerr_systemerr(xprt)
  * Authentication error reply
  */
 void
-svcerr_auth(xprt, why)
-	SVCXPRT *xprt;
-	enum auth_stat why;
+svcerr_auth(SVCXPRT *xprt, enum auth_stat why)
 {
 	struct rpc_msg rply;
 
@@ -354,10 +334,8 @@ svcerr_auth(xprt, why)
  * Auth too weak error reply
  */
 void
-svcerr_weakauth(xprt)
-	SVCXPRT *xprt;
+svcerr_weakauth(SVCXPRT *xprt)
 {
-
 	svcerr_auth(xprt, AUTH_TOOWEAK);
 }
 
@@ -365,8 +343,7 @@ svcerr_weakauth(xprt)
  * Program unavailable error reply
  */
 void 
-svcerr_noprog(xprt)
-	register SVCXPRT *xprt;
+svcerr_noprog(SVCXPRT *xprt)
 {
 	struct rpc_msg rply;  
 
@@ -381,10 +358,7 @@ svcerr_noprog(xprt)
  * Program version mismatch error reply
  */
 void  
-svcerr_progvers(xprt, low_vers, high_vers)
-	register SVCXPRT *xprt; 
-	u_long low_vers;
-	u_long high_vers;
+svcerr_progvers(SVCXPRT *xprt, u_long low_vers, u_long high_vers)
 {
 	struct rpc_msg rply;
 
@@ -416,8 +390,7 @@ svcerr_progvers(xprt, low_vers, high_vers)
  */
 
 void
-svc_getreq(rdfds)
-	int rdfds;
+svc_getreq(int rdfds)
 {
 #ifdef FD_SETSIZE
 #if defined(WIN32) || defined(_WIN64)
@@ -447,14 +420,13 @@ int i;
 }
 
 void
-svc_getreqset(readfds)
 #ifdef FD_SETSIZE
-	fd_set *readfds;
+svc_getreqset(fd_set *readfds)
 {
 #else
-	int *readfds;
+svc_getreqset(int *readfds)
 {
-    int readfds_local = *readfds;
+	int readfds_local = *readfds;
 #endif /* def FD_SETSIZE */
 	enum xprt_stat stat;
 	struct rpc_msg msg;
@@ -462,12 +434,12 @@ svc_getreqset(readfds)
 	u_long low_vers;
 	u_long high_vers;
 	struct svc_req r;
-	register SVCXPRT *xprt;
-	register u_long mask;
-	register int bit;
-	register u_long *maskp;
-	register int setsize;
-	register int sock;
+	SVCXPRT *xprt;
+	u_long mask;
+	int bit;
+	u_long *maskp;
+	int setsize;
+	int sock;
 	char cred_area[2*MAX_AUTH_BYTES + RQCRED_SIZE];
 	int i;
 
@@ -536,8 +508,7 @@ svc_getreqset(readfds)
 				 * is not served ...
 				 */
 				if (prog_found)
-					svcerr_progvers(xprt,
-					low_vers, high_vers);
+					svcerr_progvers(xprt, low_vers, high_vers);
 				else
 					 svcerr_noprog(xprt);
 				/* Fall through to ... */

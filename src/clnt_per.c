@@ -56,17 +56,16 @@ static char sccsid[] = "@(#)clnt_perror.c 1.15 87/10/07 Copyr 1984 Sun Micro";
 #include <stdlib.h>
 #endif
 
-#include <rpc/types.h>
+#include <string.h>
 #include <rpc/auth.h>
 #include <rpc/clnt.h>
+#include <rpc/rpc.h>
 
 #if !defined(WIN32) && !defined(_WIN64)
 extern char *sys_errlist[];
 extern char *sprintf();
 #endif
-static char *auth_errmsg();
-
-extern char *strcpy();
+static char *auth_errmsg(enum auth_stat stat);
 
 static char *buf;
 
@@ -83,9 +82,7 @@ _buf()
  * Print reply error info
  */
 char *
-clnt_sperror(rpch, s)
-	CLIENT *rpch;
-	char *s;
+clnt_sperror(CLIENT *rpch, char *s)
 {
 	struct rpc_err e;
 	void clnt_perrno();
@@ -173,9 +170,7 @@ clnt_sperror(rpch, s)
 }
 
 void
-clnt_perror(rpch, s)
-	CLIENT *rpch;
-	char *s;
+clnt_perror(CLIENT *rpch, char *s)
 {
 #if defined(WIN32) || defined(_WIN64)
 	nt_rpc_report(clnt_sperror(rpch,s));
@@ -234,8 +229,7 @@ static struct rpc_errtab  rpc_errlist[] = {
  * This interface for use by clntrpc
  */
 char *
-clnt_sperrno(stat)
-	enum clnt_stat stat;
+clnt_sperrno(enum clnt_stat stat)
 {
 	int i;
 
@@ -248,8 +242,7 @@ clnt_sperrno(stat)
 }
 
 void
-clnt_perrno(num)
-	enum clnt_stat num;
+clnt_perrno(enum clnt_stat num)
 {
 #if defined(WIN32) || defined(_WIN64)
 	nt_rpc_report(clnt_sperrno(num));
@@ -260,8 +253,7 @@ clnt_perrno(num)
 
 
 char *
-clnt_spcreateerror(s)
-	char *s;
+clnt_spcreateerror(char *s)
 {
 	extern int sys_nerr;
 #if !defined(WIN32) && !defined(_WIN64)
@@ -300,8 +292,7 @@ clnt_spcreateerror(s)
 }
 
 void
-clnt_pcreateerror(s)
-	char *s;
+clnt_pcreateerror(char *s)
 {
 #if defined(WIN32) || defined(_WIN64)
 	nt_rpc_report(clnt_spcreateerror(s));
@@ -335,8 +326,7 @@ static struct auth_errtab auth_errlist[] = {
 };
 
 static char *
-auth_errmsg(stat)
-	enum auth_stat stat;
+auth_errmsg(enum auth_stat stat)
 {
 	int i;
 

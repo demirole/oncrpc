@@ -48,4 +48,4 @@ struct rpcent {
       int     r_number;       /* rpc program number */
 };
 
-struct rpcent *getrpcbyname(), *getrpcbynumber(), *getrpcent();
+extern struct rpcent *getrpcbyname(char *name), *getrpcbynumber(int number), *getrpcent();

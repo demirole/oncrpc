@@ -48,43 +48,10 @@
 #ifndef __RPC_HEADER__
 #define __RPC_HEADER__
 
-#include "rpc/afm_platform.h" // platform flag adjustments
-
 #if defined(WIN32) || defined(_WIN64)	
 
 #ifndef FD_SETSIZE
 #define FD_SETSIZE	128
-#endif
-
-#include <stdlib.h>
-#include <winsock.h>
-#include <rpc/types.h>		/* some typedefs */
-#include <process.h>
-
-#define WSAerrno (WSAGetLastError())
-#define gettimeofday(tv,tz) ((tv)->tv_sec = time(0), (tv)->tv_usec = 0)
-
-#ifdef __cplusplus
-extern "C" {
-#define DOTS ...
-#else
-#define DOTS
-#endif
-
-extern int rpc_nt_init(void);
-extern int rpc_nt_exit(void);
-extern void nt_rpc_report(DOTS);
-
-#include <rpc/bcopy.h>
-extern int xdr_opaque_auth(DOTS);
-
-#ifdef __cplusplus
-};
-#endif
-
-#else
-#include <rpc/types.h>		/* some typedefs */
-#include <netinet/in.h>
 #endif
 
 /* external data representation interfaces */
@@ -97,9 +64,7 @@ extern int xdr_opaque_auth(DOTS);
 #include <rpc/clnt.h>		/* generic rpc stuff */
 
 /* semi-private protocol headers */
-#include <rpc/rpc_msg.h>	/* protocol for rpc messages */
-#if defined(WIN32) || defined(_WIN64)	
-#include <rpc/auth_uni.h>	/* protocol for unix style cred */
+#if defined(WIN32) || defined(_WIN64)
 #else
 #include <rpc/auth_unix.h>	/* protocol for unix style cred */
 #endif
@@ -107,11 +72,9 @@ extern int xdr_opaque_auth(DOTS);
  *  Uncomment-out the next line if you are building the rpc library with
  *  DES Authentication (see the README file in the secure_rpc/ directory).
  */
-/*#include <rpc/auth_des.h>	/* protocol for des style cred */
+/*#include <rpc/auth_des.h>	// protocol for des style cred */
 
 /* Server side only remote procedure callee */
-#include <rpc/svc.h>		/* service manager and multiplexer */
-#include <rpc/svc_auth.h>	/* service side authenticator */
 
 /*
  * COMMENT OUT THE NEXT INCLUDE IF RUNNING ON SUN OS OR ON A VERSION
@@ -119,6 +82,29 @@ extern int xdr_opaque_auth(DOTS);
  * defined by <rpc/netdb.h> included in <netdb.h>.
  */
 /* routines for parsing /etc/rpc */
-#include <rpc/netdb.h>		/* structures and routines to parse /etc/rpc */
+
+#include <winsock.h>
+
+#define WSAerrno (WSAGetLastError())
+#define gettimeofday(tv,tz) ((tv)->tv_sec = time(0), (tv)->tv_usec = 0)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int rpc_nt_init(void);
+extern int rpc_nt_exit(void);
+extern void nt_rpc_report(LPTSTR);
+
+extern void get_myaddress(struct sockaddr_in *addr);
+
+#ifdef __cplusplus
+};
+#endif
+
+#else
+#include <rpc/types.h>		/* some typedefs */
+#include <netinet/in.h>
+#endif
 
 #endif /* ndef __RPC_HEADER__ */

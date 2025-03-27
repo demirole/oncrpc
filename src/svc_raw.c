@@ -64,11 +64,11 @@ static struct svcraw_private {
 	char	verf_body[MAX_AUTH_BYTES];
 } *svcraw_private;
 
-static bool_t		svcraw_recv();
+static bool_t		svcraw_recv(SVCXPRT *xprt, struct rpc_msg *msg);
 static enum xprt_stat 	svcraw_stat();
-static bool_t		svcraw_getargs();
-static bool_t		svcraw_reply();
-static bool_t		svcraw_freeargs();
+static bool_t		svcraw_getargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr);
+static bool_t		svcraw_reply(SVCXPRT *xprt, struct rpc_msg *msg);
+static bool_t		svcraw_freeargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr);
 static void		svcraw_destroy();
 
 static struct xp_ops server_ops = {
@@ -83,7 +83,7 @@ static struct xp_ops server_ops = {
 SVCXPRT *
 svcraw_create()
 {
-	register struct svcraw_private *srp = svcraw_private;
+	struct svcraw_private *srp = svcraw_private;
 
 	if (srp == 0) {
 		srp = (struct svcraw_private *)calloc(1, sizeof (*srp));
@@ -101,17 +101,14 @@ svcraw_create()
 static enum xprt_stat
 svcraw_stat()
 {
-
 	return (XPRT_IDLE);
 }
 
 static bool_t
-svcraw_recv(xprt, msg)
-	SVCXPRT *xprt;
-	struct rpc_msg *msg;
+svcraw_recv(SVCXPRT *xprt, struct rpc_msg *msg)
 {
-	register struct svcraw_private *srp = svcraw_private;
-	register XDR *xdrs;
+	struct svcraw_private *srp = svcraw_private;
+	XDR *xdrs;
 
 	if (srp == 0)
 		return (0);
@@ -124,12 +121,10 @@ svcraw_recv(xprt, msg)
 }
 
 static bool_t
-svcraw_reply(xprt, msg)
-	SVCXPRT *xprt;
-	struct rpc_msg *msg;
+svcraw_reply(SVCXPRT *xprt, struct rpc_msg *msg)
 {
-	register struct svcraw_private *srp = svcraw_private;
-	register XDR *xdrs;
+	struct svcraw_private *srp = svcraw_private;
+	XDR *xdrs;
 
 	if (srp == 0)
 		return (FALSE);
@@ -143,12 +138,9 @@ svcraw_reply(xprt, msg)
 }
 
 static bool_t
-svcraw_getargs(xprt, xdr_args, args_ptr)
-	SVCXPRT *xprt;
-	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+svcraw_getargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr)
 {
-	register struct svcraw_private *srp = svcraw_private;
+	struct svcraw_private *srp = svcraw_private;
 
 	if (srp == 0)
 		return (FALSE);
@@ -156,13 +148,10 @@ svcraw_getargs(xprt, xdr_args, args_ptr)
 }
 
 static bool_t
-svcraw_freeargs(xprt, xdr_args, args_ptr)
-	SVCXPRT *xprt;
-	xdrproc_t xdr_args;
-	caddr_t args_ptr;
+svcraw_freeargs(SVCXPRT *xprt, xdrproc_t xdr_args, caddr_t args_ptr)
 { 
-	register struct svcraw_private *srp = svcraw_private;
-	register XDR *xdrs;
+	struct svcraw_private *srp = svcraw_private;
+	XDR *xdrs;
 
 	if (srp == 0)
 		return (FALSE);

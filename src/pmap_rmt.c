@@ -82,16 +82,10 @@ static struct timeval timeout = { 3, 0 };
  * programs to do a lookup and call in one step.
 */
 enum clnt_stat
-pmap_rmtcall(addr, prog, vers, proc, xdrargs, argsp, xdrres, resp, tout, port_ptr)
-	struct sockaddr_in *addr;
-	u_long prog, vers, proc;
-	xdrproc_t xdrargs, xdrres;
-	caddr_t argsp, resp;
-	struct timeval tout;
-	u_long *port_ptr;
+pmap_rmtcall(struct sockaddr_in *addr, u_long prog, u_long vers, u_long proc, xdrproc_t xdrargs, caddr_t argsp, xdrproc_t xdrres, caddr_t resp, struct timeval tout, u_long *port_ptr)
 {
 	int socket = -1;
-	register CLIENT *client;
+	CLIENT *client;
 	struct rmtcallargs a;
 	struct rmtcallres r;
 	enum clnt_stat stat;
@@ -128,9 +122,7 @@ pmap_rmtcall(addr, prog, vers, proc, xdrargs, argsp, xdrres, resp, tout, port_pt
  * written for XDR_ENCODE direction only
  */
 bool_t
-xdr_rmtcall_args(xdrs, cap)
-	register XDR *xdrs;
-	register struct rmtcallargs *cap;
+xdr_rmtcall_args(XDR *xdrs, struct rmtcallargs *cap)
 {
 	u_int lenposition, argposition, position;
 
@@ -159,9 +151,7 @@ xdr_rmtcall_args(xdrs, cap)
  * written for XDR_DECODE direction only
  */
 bool_t
-xdr_rmtcallres(xdrs, crp)
-	register XDR *xdrs;
-	register struct rmtcallres *crp;
+xdr_rmtcallres(XDR *xdrs, struct rmtcallres *crp)
 {
 	caddr_t port_ptr;
 
@@ -179,13 +169,11 @@ xdr_rmtcallres(xdrs, crp)
  * The following is kludged-up support for simple rpc broadcasts.
  * Someday a large, complicated system will replace these trivial
  * routines which only support udp/ip .
+ *	int sock;  any valid socket will do 
+ *	char *buf;  why allocxate more when we can use existing...
  */
-
 static int
-getbroadcastnets(addrs, sock, buf)
-	struct in_addr *addrs;
-	int sock;  /* any valid socket will do */
-	char *buf;  /* why allocxate more when we can use existing... */
+getbroadcastnets(struct in_addr *addrs, int sock, char *buf)
 {
 #if defined(WIN32) || defined(_WIN64)
 	/* try to do a global broadcast, this is not a clean solution */
@@ -235,23 +223,26 @@ getbroadcastnets(addrs, sock, buf)
 #endif
 }
 
-typedef bool_t (*resultproc_t)();
-
+/*
+ * Broadcast a call on the local network.
+ * This routine is used to broadcast a call on the local network.
+ * It is used by rpc clients to locate rpc servers.
+ * u_long		prog;		program number
+ * u_long		vers;		version number
+ * u_long		proc;		procedure number
+ * xdrproc_t	xargs;		xdr routine for args
+ * caddr_t		argsp;		pointer to args
+ * xdrproc_t	xresults;	xdr routine for results
+ * caddr_t		resultsp;	pointer to results
+ * resultproc_t	eachresult;	call with each result obtained
+ */
 enum clnt_stat
-clnt_broadcast(prog, vers, proc, xargs, argsp, xresults, resultsp, eachresult)
-	u_long		prog;		/* program number */
-	u_long		vers;		/* version number */
-	u_long		proc;		/* procedure number */
-	xdrproc_t	xargs;		/* xdr routine for args */
-	caddr_t		argsp;		/* pointer to args */
-	xdrproc_t	xresults;	/* xdr routine for results */
-	caddr_t		resultsp;	/* pointer to results */
-	resultproc_t	eachresult;	/* call with each result obtained */
+clnt_broadcast(u_long prog, u_long vers, u_long proc, xdrproc_t xargs, caddr_t argsp, xdrproc_t xresults, caddr_t resultsp, resultproc_t eachresult)	
 {
 	enum clnt_stat stat;
 	AUTH *unix_auth = authunix_create_default();
 	XDR xdr_stream;
-	register XDR *xdrs = &xdr_stream;
+	XDR *xdrs = &xdr_stream;
 	int outlen, inlen, fromlen, nets;
 	register int sock;
 	int on = 1;
@@ -262,9 +253,9 @@ clnt_broadcast(prog, vers, proc, xargs, argsp, xresults, resultsp, eachresult)
 	int readfds;
 	register int mask;
 #endif /* def FD_SETSIZE */
-	register int i;
+	int i;
 	bool_t done = FALSE;
-	register u_long xid;
+	u_long xid;
 	u_long port;
 	struct in_addr addrs[20];
 	struct sockaddr_in baddr, raddr; /* broadcast and response addresses */

@@ -63,11 +63,7 @@ static char sccsid[] = "@(#)clnt_generic.c 1.4 87/08/11 (C) 1987 SMI";
  * change using the rpc equivalent of ioctl()'s.
  */
 CLIENT *
-clnt_create(hostname, prog, vers, proto)
-	char *hostname;
-	unsigned prog;
-	unsigned vers;
-	char *proto;
+clnt_create(char *hostname, u_long prog, u_long vers, char *proto)
 {
 	struct hostent *h;
 	struct protoent *p;

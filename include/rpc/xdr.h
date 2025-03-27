@@ -49,11 +49,13 @@
 #ifndef __XDR_HEADER__
 #define __XDR_HEADER__
 
+#include "rpc/types.h"
+
 #ifdef __cplusplus
+#include <cstdio>
 extern "C" {
-#define DOTS ...
 #else
-#define DOTS
+#include <stdio.h>
 #endif
 
 /*
@@ -105,6 +107,30 @@ enum xdr_op {
 		    * BYTES_PER_XDR_UNIT)
 
 /*
+ * The XDR handle.
+ * Contains operation which is being applied to the stream,
+ * an operations vector for the paticular implementation (e.g. see xdr_mem.c),
+ * and two private fields for the use of the particular impelementation.
+ */
+typedef struct __rpc_xdr {
+	enum xdr_op	x_op;		/* operation; fast additional param */
+	struct xdr_ops {
+		bool_t	(*x_getlong)(struct __rpc_xdr *, long *);          /* get a long from underlying stream */
+		bool_t	(*x_putlong)(struct __rpc_xdr *, long *);          /* put a long to " */
+		bool_t	(*x_getbytes)(struct __rpc_xdr *, caddr_t, u_int); /* get some bytes from " */
+		bool_t	(*x_putbytes)(struct __rpc_xdr *, caddr_t, u_int); /* put some bytes to " */
+		u_int	(*x_getpostn)(struct __rpc_xdr *);                 /* returns bytes off from beginning */
+		bool_t  (*x_setpostn)(struct __rpc_xdr *, u_int);          /* lets you reposition the stream */
+		long *	(*x_inline)(struct __rpc_xdr *, u_int);            /* buf quick ptr to buffered data */
+		void	(*x_destroy)(struct __rpc_xdr *);                  /* free privates of this xdr_stream */
+	} *x_ops;
+	caddr_t 	x_public;	/* users' data */
+	caddr_t		x_private;	/* pointer to private data */
+	caddr_t 	x_base;		/* private used for position info */
+	int		x_handy;	/* extra private word */
+} XDR;
+
+/*
  * A xdrproc_t exists for each data type which is to be encoded or decoded.
  *
  * The second argument to the xdrproc_t is a pointer to an opaque pointer.
@@ -113,31 +139,7 @@ enum xdr_op {
  * allocate dynamic storage of the appropriate size and return it.
  * bool_t	(*xdrproc_t)(XDR *, caddr_t *);
  */
-typedef	bool_t (*xdrproc_t)(DOTS);
-
-/*
- * The XDR handle.
- * Contains operation which is being applied to the stream,
- * an operations vector for the paticular implementation (e.g. see xdr_mem.c),
- * and two private fields for the use of the particular impelementation.
- */
-typedef struct {
-	enum xdr_op	x_op;		/* operation; fast additional param */
-	struct xdr_ops {
-		bool_t	(*x_getlong)(DOTS);	/* get a long from underlying stream */
-		bool_t	(*x_putlong)(DOTS);	/* put a long to " */
-		bool_t	(*x_getbytes)(DOTS);/* get some bytes from " */
-		bool_t	(*x_putbytes)(DOTS);/* put some bytes to " */
-		u_int	(*x_getpostn)(DOTS);/* returns bytes off from beginning */
-		bool_t  (*x_setpostn)(DOTS);/* lets you reposition the stream */
-		long *	(*x_inline)(DOTS);	/* buf quick ptr to buffered data */
-		void	(*x_destroy)(DOTS);	/* free privates of this xdr_stream */
-	} *x_ops;
-	caddr_t 	x_public;	/* users' data */
-	caddr_t		x_private;	/* pointer to private data */
-	caddr_t 	x_base;		/* private used for position info */
-	int		x_handy;	/* extra private word */
-} XDR;
+typedef	bool_t (*xdrproc_t)(XDR *, ...);
 
 /*
  * Operations defined on a XDR handle
@@ -239,29 +241,29 @@ struct xdr_discrim {
 /*
  * These are the "generic" xdr routines.
  */
-extern bool_t	xdr_void(DOTS);
-extern bool_t	xdr_int(DOTS);
-extern bool_t	xdr_u_int(DOTS);
-extern bool_t	xdr_long(DOTS);
-extern bool_t	xdr_u_long(DOTS);
-extern bool_t	xdr_short(DOTS);
-extern bool_t	xdr_u_short(DOTS);
-extern bool_t	xdr_bool(DOTS);
-extern bool_t	xdr_enum(DOTS);
-extern bool_t	xdr_array(DOTS);
-extern bool_t	xdr_bytes(DOTS);
-extern bool_t	xdr_opaque(DOTS);
-extern bool_t	xdr_string(DOTS);
-extern bool_t	xdr_union(DOTS);
-extern bool_t	xdr_char(DOTS);
-extern bool_t	xdr_u_char(DOTS);
-extern bool_t	xdr_vector(DOTS);
-extern bool_t	xdr_float(DOTS);
-extern bool_t	xdr_double(DOTS);
-extern bool_t	xdr_reference(DOTS);
-extern bool_t	xdr_pointer(DOTS);
-extern bool_t	xdr_wrapstring(DOTS);
-extern void		xdr_free(DOTS);			// prototype inserted pi 02-09-26
+extern bool_t	xdr_void(XDR *);
+extern bool_t	xdr_int(XDR *, int *);
+extern bool_t	xdr_u_int(XDR *, u_int *);
+extern bool_t	xdr_long(XDR *, long *);
+extern bool_t	xdr_u_long(XDR *, u_long *);
+extern bool_t	xdr_short(XDR *, short *);
+extern bool_t	xdr_u_short(XDR *, u_short *);
+extern bool_t	xdr_bool(XDR *, bool_t *);
+extern bool_t	xdr_enum(XDR *, enum_t *);
+extern bool_t	xdr_array(XDR *, caddr_t *, u_int *, u_int, u_int, xdrproc_t);
+extern bool_t	xdr_bytes(XDR *, char **, u_int *, u_int);
+extern bool_t	xdr_opaque(XDR *, caddr_t, u_int);
+extern bool_t	xdr_string(XDR *, char **, u_int);
+extern bool_t	xdr_union(XDR *, enum_t *, char *, struct xdr_discrim *, xdrproc_t);
+extern bool_t	xdr_char(XDR *, char *);
+extern bool_t	xdr_u_char(XDR *, char *);
+extern bool_t	xdr_vector(XDR *, caddr_t *, u_int *, u_int, u_int, xdrproc_t);
+extern bool_t	xdr_float(XDR *, float *);
+extern bool_t	xdr_double(XDR *, double *);
+extern bool_t	xdr_reference(XDR *, caddr_t *, u_int, xdrproc_t);
+extern bool_t	xdr_pointer(XDR *, char **, u_int, xdrproc_t);
+extern bool_t	xdr_wrapstring(XDR *, char **);
+extern void		xdr_free(xdrproc_t, char *);			// prototype inserted pi 02-09-26
 /*
  * Common opaque bytes objects used by many rpc protocols;
  * declared here due to commonality.
@@ -272,18 +274,20 @@ struct netobj {
 	char	*n_bytes;
 };
 typedef struct netobj netobj;
-extern bool_t   xdr_netobj(DOTS);
+extern bool_t   xdr_netobj(XDR *, struct netobj *);
 
 /*
  * These are the public routines for the various implementations of
  * xdr streams.
  */
-extern void   xdrmem_create(DOTS);		/* XDR using memory buffers */
-extern void   xdrstdio_create(DOTS);	/* XDR using stdio library */
-extern void   xdrrec_create(DOTS);		/* XDR pseudo records for tcp */
-extern bool_t xdrrec_endofrecord(DOTS);	/* make end of xdr record */
-extern bool_t xdrrec_skiprecord(DOTS);	/* move to beginning of next record */
-extern bool_t xdrrec_eof(DOTS);		/* true if no more input */
+extern void   xdrmem_create(XDR *, caddr_t, u_int, enum xdr_op);		/* XDR using memory buffers */
+extern void   xdrstdio_create(XDR *, FILE *, enum xdr_op);	/* XDR using stdio library */
+extern void   xdrrec_create(XDR *, u_int, u_int, caddr_t,
+	int (*)(void *, void *, int),
+	int (*)(void *, void *, int));  /* XDR pseudo records for tcp */
+extern bool_t xdrrec_endofrecord(XDR *xdrs, bool_t sendnow);                                  /* make end of xdr record */
+extern bool_t xdrrec_skiprecord(XDR *xdrs);                                                   /* move to beginning of next record */
+extern bool_t xdrrec_eof(XDR *xdrs);                                                          /* true if no more input */
 
 #ifdef __cplusplus
 };

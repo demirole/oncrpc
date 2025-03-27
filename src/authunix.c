@@ -67,9 +67,7 @@ static char sccsid[] = "@(#)authunix_prot.c 1.15 87/08/11 Copyr 1984 Sun Micro";
  * XDR for unix authentication parameters.
  */
 bool_t
-xdr_authunix_parms(xdrs, p)
-	register XDR *xdrs;
-	register struct authunix_parms *p;
+xdr_authunix_parms(XDR *xdrs, struct authunix_parms *p)
 {
 
 	if (xdr_u_long(xdrs, &(p->aup_time))
@@ -77,7 +75,7 @@ xdr_authunix_parms(xdrs, p)
 	    && xdr_int(xdrs, &(p->aup_uid))
 	    && xdr_int(xdrs, &(p->aup_gid))
 	    && xdr_array(xdrs, (caddr_t *)&(p->aup_gids),
-		    &(p->aup_len), NGRPS, sizeof(int), xdr_int) ) {
+		    &(p->aup_len), NGRPS, sizeof(int), (xdrproc_t)xdr_int) ) {
 		return (TRUE);
 	}
 	return (FALSE);

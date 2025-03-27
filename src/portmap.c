@@ -60,8 +60,8 @@ static	char sccsid[] = "@(#)portmap.c 1.2 85/03/13 Copyr 1984 Sun Micro";
 #include <rpc/pmap_pro.h>
 #include <stdio.h>
 
-int reg_service();
-static void callit();
+int reg_service(struct svc_req *, SVCXPRT *);
+static void callit(struct svc_req *rqstp, SVCXPRT *xprt);
 
 #ifdef DEBUG
 #define	syslog(e, s)	fprintf(stderr, (s))
@@ -139,12 +139,10 @@ main()
 struct pmaplist *pmaplist;
 
 static struct pmaplist *
-find_service(prog, vers, prot)
-	u_long prog;
-	u_long vers;
+find_service(u_long prog, u_long vers, u_long prot)
 {
-	register struct pmaplist *hit = NULL;
-	register struct pmaplist *pml;
+	struct pmaplist *hit = NULL;
+	struct pmaplist *pml;
 
 	for (pml = pmaplist; pml != NULL; pml = pml->pml_next) {
 		if ((pml->pml_map.pm_prog != prog) ||
@@ -161,9 +159,8 @@ find_service(prog, vers, prot)
 /* 
  * 1 OK, 0 not
  */
-reg_service(rqstp, xprt)
-	struct svc_req *rqstp;
-	SVCXPRT *xprt;
+int 
+reg_service(struct svc_req *rqstp, SVCXPRT *xprt)
 {
 	struct pmap reg;
 	struct pmaplist *pml, *prevpml, *fnd;
@@ -323,11 +320,8 @@ typedef struct encap_parms {
 } encap_parms_t;
 
 static bool_t
-xdr_encap_parms(xdrs, epp)
-	XDR *xdrs;
-	struct encap_parms *epp;
+xdr_encap_parms(XDR *xdrs, struct encap_parms *epp)
 {
-
 	return (xdr_bytes(xdrs, &(epp->args), &(epp->arglen), ARGSIZE));
 }
 
@@ -340,11 +334,8 @@ typedef struct rmtcallargs {
 } rmtcallargs_t;
 
 static bool_t
-xdr_rmtcall_args(xdrs, cap)
-	register XDR *xdrs;
-	register struct rmtcallargs *cap;
+xdr_rmtcall_args(XDR *xdrs, struct rmtcallargs *cap)
 {
-
 	/* does not get a port number */
 	if (xdr_u_long(xdrs, &(cap->rmt_prog)) &&
 	    xdr_u_long(xdrs, &(cap->rmt_vers)) &&
@@ -355,9 +346,7 @@ xdr_rmtcall_args(xdrs, cap)
 }
 
 static bool_t
-xdr_rmtcall_result(xdrs, cap)
-	register XDR *xdrs;
-	register struct rmtcallargs *cap;
+xdr_rmtcall_result(XDR *xdrs, struct rmtcallargs *cap)
 {
 	if (xdr_u_long(xdrs, &(cap->rmt_port)))
 		return (xdr_encap_parms(xdrs, &(cap->rmt_args)));
@@ -369,11 +358,8 @@ xdr_rmtcall_result(xdrs, cap)
  * The arglen must already be set!!
  */
 static bool_t
-xdr_opaque_parms(xdrs, cap)
-	XDR *xdrs;
-	struct rmtcallargs *cap;
+xdr_opaque_parms(XDR *xdrs, struct rmtcallargs *cap)
 {
-
 	return (xdr_opaque(xdrs, cap->rmt_args.args, cap->rmt_args.arglen));
 }
 
@@ -382,11 +368,9 @@ xdr_opaque_parms(xdrs, cap)
  * and then calls xdr_opaque_parms.
  */
 static bool_t
-xdr_len_opaque_parms(xdrs, cap)
-	register XDR *xdrs;
-	struct rmtcallargs *cap;
+xdr_len_opaque_parms(XDR *xdrs, struct rmtcallargs *cap)
 {
-	register u_int beginpos, lowpos, highpos, currpos, pos;
+	u_int beginpos, lowpos, highpos, currpos, pos;
 
 	beginpos = lowpos = pos = xdr_getpos(xdrs);
 	highpos = lowpos + ARGSIZE;
@@ -411,9 +395,7 @@ xdr_len_opaque_parms(xdrs, cap)
  * a machine should shut-up instead of complain, less the requestor be
  * overrun with complaints at the expense of not hearing a valid reply ...
  */
-static void callit(rqstp, xprt)
-	struct svc_req *rqstp;
-	SVCXPRT *xprt;
+static void callit(struct svc_req *rqstp, SVCXPRT *xprt)
 {
 	char buf[2000];
 	struct rmtcallargs a;
